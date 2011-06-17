@@ -4,3 +4,4 @@ syntax: glob
 */obj/x86/Debug/*
 */obj/Debug/*
 *ReSharper*
+LTGDotNet/bin/*.log

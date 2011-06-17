@@ -53,7 +53,17 @@ namespace LTGSimulator
 
         public string ToCommandString()
         {
-            return Type == ApplicationType.Left ? "2\n" + Card.ToString() + "\n" + Slot + "\n" : "1\n" + Card.ToString() + "\n" + Slot + "\n";
+            return Type == ApplicationType.Left ?
+                string.Format("1\n{0}\n{1}\n", Card, Slot) :
+                string.Format("2\n{0}\n{1}\n", Slot, Card);
+
+        }
+
+        public override string ToString()
+        {
+            return Type == ApplicationType.Left ? 
+                string.Format("{0} {1}", Card, Slot) : 
+                string.Format("{0} {1}", Slot, Card);
         }
     }
 
@@ -69,22 +79,35 @@ namespace LTGSimulator
             _gameInProgress = true;
             _currentTurn = 0;
 
-            while (_gameInProgress)
+            try
             {
-                if (moveFirst)
+                while (_gameInProgress)
                 {
-                    LTGTurn turn = GetTurn();
-                    ReaderWriter.ExecuteTurn(turn);
-                    LTGTurn opponentTurn = ReaderWriter.GetOpponentTurn();
+                    if (moveFirst)
+                    {
+                        var turn = GetTurn();
+                        ReaderWriter.ExecuteTurn(turn);
+                        log.DebugFormat("      we played: {0}", turn);
+
+                        var opponentTurn = ReaderWriter.GetOpponentTurn();
+                        log.DebugFormat("opponent played: {0}", opponentTurn);
+                    }
+                    else
+                    {
+                        var opponentTurn = ReaderWriter.GetOpponentTurn();
+                        log.DebugFormat("opponent played: {0}", opponentTurn);
+                        
+                        var turn = GetTurn();
+                        ReaderWriter.ExecuteTurn(turn);
+                        log.DebugFormat("      we played: {0}", turn);
+                    }
+                    _currentTurn++;
+                    log.DebugFormat("---- turn {0} ----", _currentTurn);
                 }
-                else
-                {
-                    LTGTurn opponentTurn = ReaderWriter.GetOpponentTurn();
-                    LTGTurn turn = GetTurn();
-                    ReaderWriter.ExecuteTurn(turn);
-                }
-                _currentTurn++;
-                log.Debug("Done with turn " + _currentTurn);
+            }
+            catch(GameOverException)
+            {
+                _gameInProgress = false;
             }
         }
 

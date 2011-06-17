@@ -22,8 +22,7 @@ namespace LTGSimulator
         }
 
         public virtual void ExecuteTurn(LTGTurn turn)
-        {
-            log.Debug("sending " + turn.ToCommandString());            
+        {                   
             _oStream.Write(turn.ToCommandString());
             _oStream.Flush();
         }
