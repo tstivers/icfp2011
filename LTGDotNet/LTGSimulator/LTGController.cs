@@ -65,6 +65,15 @@ namespace LTGSimulator
                 string.Format("{0} {1}", Card, Slot) : 
                 string.Format("{0} {1}", Slot, Card);
         }
+
+        public static LTGTurn Parse(string s)
+        {
+            int slot;
+            var args = s.Split(new char[] {' '});
+            return int.TryParse(args[0], out slot) ? 
+                new LTGTurn(slot, (Cards)Enum.Parse(typeof(Cards), args[1])) : 
+                new LTGTurn((Cards)Enum.Parse(typeof(Cards), args[0]), int.Parse(args[1]));
+        }
     }
 
     public abstract class LTGController
@@ -73,11 +82,13 @@ namespace LTGSimulator
         private bool _gameInProgress;
         protected static readonly ILog log = LogManager.GetLogger(typeof(LTGController));
         protected int _currentTurn;
+        protected int _playerNum;
 
         public void PlayGame(bool moveFirst)
         {
             _gameInProgress = true;
             _currentTurn = 0;
+            _playerNum = moveFirst ? 0 : 1;
 
             try
             {
