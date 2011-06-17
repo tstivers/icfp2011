@@ -1,0 +1,32 @@
+# repeatedly attack opponent's slot 1
+0 attack
+0 zero
+K 0
+S 0
+0 succ
+0 zero
+1 zero
+succ 1
+dbl 1
+dbl 1
+dbl 1
+dbl 1
+dbl 1
+dbl 1
+dbl 1
+dbl 1 # 256
+dbl 1
+dbl 1
+dbl 1
+dbl 1
+dbl 1 # 8092
+# dbl 1
+K 0
+S 0
+0 get
+K 0
+S 0
+0 succ
+0 zero
+put 0
+put 1
