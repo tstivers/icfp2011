@@ -25,7 +25,7 @@ namespace LTGCliClient
                                             select iAppender))
             {
                 FileAppender fileAppender = appender as FileAppender;              
-                fileAppender.File = logFileName;               
+                fileAppender.File = Path.Combine(Directory.GetCurrentDirectory(), logFileName);
                 fileAppender.ActivateOptions();
             }
         }

@@ -51,6 +51,7 @@
     <Compile Include="NoopController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LTGReaderWriter.cs" />
+    <Compile Include="ScriptedController.cs" />
     <Compile Include="TestReaderWriter.cs" />
   </ItemGroup>
   <ItemGroup>
