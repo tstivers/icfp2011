@@ -1,0 +1,6 @@
+syntax: glob
+LTGDotNet/_ReSharper.*
+LTGDotNet/LTGDotNet.5.1.ReSharper.user
+*.suo
+*/bin/Debug/*
+*/obj/x86/Debug/*
