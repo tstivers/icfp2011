@@ -51,9 +51,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LTGSimulator\LTGSimulator.csproj">
+    <ProjectReference Include="..\LTGSimulator\LtgSimulator.csproj">
       <Project>{D70BB2E0-0253-4675-84A9-B92E39B70C40}</Project>
-      <Name>LTGSimulator</Name>
+      <Name>LtgSimulator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

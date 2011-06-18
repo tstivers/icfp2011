@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LtgSimulator.Controllers;
 
-namespace LTGSimulator.GameState
+namespace LtgSimulator.GameState
 {
     public class Slot
     {
@@ -51,18 +52,19 @@ namespace LTGSimulator.GameState
         public bool IsFunction { get { return Function != null; } }
     }
 
-    public class GameState
+    public class LtgGameState
     {
-        protected int ProponentId;        
+        protected int ProponentId;
         protected int OpponentId;
         private readonly Slot[][] _state = new Slot[2][];
-        private readonly LTGTurn[] _lastTurn = new LTGTurn[2];
+        private readonly LtgTurn[] _lastTurn = new LtgTurn[2];
 
-        public LTGTurn LastOpponentTurn { get { return _lastTurn[OpponentId]; } }      
+        public LtgTurn LastOpponentTurn { get { return _lastTurn[OpponentId]; } }      
         public Slot[] ProponentSlot { get { return _state[ProponentId]; } }
         public Slot[] OpponentSlot { get { return _state[OpponentId]; } }
+        public int Turn { get; private set; }
 
-        public GameState(int proponentId)
+        public LtgGameState(int proponentId)
         {
             ProponentId = proponentId;
             OpponentId = proponentId == 0 ? 1 : 0;
@@ -70,19 +72,23 @@ namespace LTGSimulator.GameState
             _state[1] = new Slot[256];
         }
        
-        public virtual void ApplyProponentTurn(LTGTurn turn)
+        public void ApplyProponentTurn(LtgTurn turn)
         {
             _lastTurn[ProponentId] = turn;
             ApplyTurn(turn, ProponentSlot, OpponentSlot);
+            if (ProponentId == 1)
+                Turn++;
         }
 
-        public virtual void ApplyOpponentTurn(LTGTurn turn)
+        public void ApplyOpponentTurn(LtgTurn turn)
         {
             _lastTurn[OpponentId] = turn;
             ApplyTurn(turn, OpponentSlot, ProponentSlot);
+            if (OpponentId == 1)
+                Turn++;
         }
 
-        protected virtual void ApplyTurn(LTGTurn turn, Slot[] proponent, Slot[] opponent)
+        protected void ApplyTurn(LtgTurn turn, Slot[] proponent, Slot[] opponent)
         {
             // TODO: emulator goes here :)
         }

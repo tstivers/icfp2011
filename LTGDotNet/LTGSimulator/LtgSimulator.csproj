@@ -8,7 +8,7 @@
     <ProjectGuid>{D70BB2E0-0253-4675-84A9-B92E39B70C40}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LTGSimulator</RootNamespace>
+    <RootNamespace>LtgSimulator</RootNamespace>
     <AssemblyName>LTGSimulator</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,12 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\LTGControllerBase.cs" />
-    <Compile Include="Controllers\NoopController.cs" />
-    <Compile Include="GameState\GameState.cs" />
+    <Compile Include="Controllers\LtgControllerBase.cs" />
+    <Compile Include="Controllers\Noop.cs" />
+    <Compile Include="GameState\LtgGameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LTGReaderWriter.cs" />
-    <Compile Include="Controllers\ScriptedController.cs" />
+    <Compile Include="LtgReaderWriter.cs" />
+    <Compile Include="Controllers\ScriptRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

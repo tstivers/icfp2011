@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using LTGSimulator;
+using LtgSimulator;
 using System.IO;
 using log4net;
 using log4net.Repository;
 using log4net.Appender;
+using LtgSimulator.Controllers;
 
 namespace LTGCliClient
 {
-    class CliController
+    class LtgClient
     {
-        protected static readonly ILog log = LogManager.GetLogger(typeof(CliController));
+        protected static readonly ILog log = LogManager.GetLogger(typeof(LtgClient));
 
         // adapted from http://geekswithblogs.net/wpeck/archive/2009/10/08/setting-log4net-fileappender.file-at-runtime.aspx
         public static void InitializeLogFile(string logFileName)
@@ -45,11 +46,11 @@ namespace LTGCliClient
             log.Debug("----------- app starting ------------");
             log.Debug("Command line: " + String.Join(" ", args));
             
-            var cType = Type.GetType("LTGSimulator." + args[1] + ", LTGSimulator");
+            var cType = Type.GetType("LtgSimulator.Controllers." + args[1] + ", LTGSimulator");
           
-            var ltgReaderWriter = new LTGReaderWriter();
-            var ltgController = (LTGControllerBase) Activator.CreateInstance(cType);
-            ltgController.Init(args);
+            var ltgReaderWriter = new LtgReaderWriter();
+            var ltgController = (LtgControllerBase)Activator.CreateInstance(cType);
+            ltgController.Init(int.Parse(args[0]), args);
 
             Stream standardInput = Console.OpenStandardInput();
             Stream standardOutput = Console.OpenStandardOutput();
@@ -57,7 +58,7 @@ namespace LTGCliClient
             ltgReaderWriter.SetStreams(standardInput, standardOutput);
             ltgController.ReaderWriter = ltgReaderWriter;
 
-            ltgController.PlayGame(args[0] == "0");
+            ltgController.PlayGame();
         }
     }
 }

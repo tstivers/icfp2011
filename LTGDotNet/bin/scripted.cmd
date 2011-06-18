@@ -1,1 +1,1 @@
-@..\LTGCliClient\bin\debug\LTGCliClient.exe %1 ScriptedController
+@..\LTGCliClient\bin\debug\LTGCliClient.exe %1 ScriptRunner

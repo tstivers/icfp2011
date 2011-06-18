@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LTGSimulator", "LTGSimulator\LTGSimulator.csproj", "{D70BB2E0-0253-4675-84A9-B92E39B70C40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtgSimulator", "LTGSimulator\LtgSimulator.csproj", "{D70BB2E0-0253-4675-84A9-B92E39B70C40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LTGCliClient", "LTGCliClient\LTGCliClient.csproj", "{67ADDBEF-BE61-4864-8DF2-7E97E5894246}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtgClient", "LTGCliClient\LtgClient.csproj", "{67ADDBEF-BE61-4864-8DF2-7E97E5894246}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

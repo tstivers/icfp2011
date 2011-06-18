@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using log4net;
+using LtgSimulator.Controllers;
 
-namespace LTGSimulator
+namespace LtgSimulator
 {
-    public class LTGReaderWriter
+    public class LtgReaderWriter
     {
-        protected static readonly ILog log = LogManager.GetLogger(typeof(LTGReaderWriter));
+        protected static readonly ILog log = LogManager.GetLogger(typeof(LtgReaderWriter));
 
         protected StreamReader _iStream;
         protected StreamWriter _oStream;
@@ -21,13 +22,13 @@ namespace LTGSimulator
             _oStream.AutoFlush = false;
         }
 
-        public virtual void ExecuteTurn(LTGTurn turn)
+        public virtual void ExecuteTurn(LtgTurn turn)
         {                   
             _oStream.Write(turn.ToCommandString());
             _oStream.Flush();
         }
 
-        public virtual LTGTurn GetOpponentTurn()
+        public virtual LtgTurn GetOpponentTurn()
         {
 
             String p1 = _iStream.ReadLine();
@@ -40,8 +41,8 @@ namespace LTGSimulator
             }
 
             return p1 == "1" ?
-                new LTGTurn((LTGTurn.Cards)Enum.Parse(typeof(LTGTurn.Cards), p2), int.Parse(p3)) :
-                new LTGTurn(int.Parse(p2), (LTGTurn.Cards)Enum.Parse(typeof(LTGTurn.Cards), p3));
+                new LtgTurn((LtgTurn.Cards)Enum.Parse(typeof(LtgTurn.Cards), p2), int.Parse(p3)) :
+                new LtgTurn(int.Parse(p2), (LtgTurn.Cards)Enum.Parse(typeof(LtgTurn.Cards), p3));
         }
 
        

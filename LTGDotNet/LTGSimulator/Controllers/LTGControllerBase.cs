@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using log4net;
+using LtgSimulator.GameState;
 
-namespace LTGSimulator
+namespace LtgSimulator.Controllers
 {
-    public struct LTGTurn
+    public struct LtgTurn
     {
         public enum ApplicationType
         {
@@ -37,14 +38,14 @@ namespace LTGSimulator
         public Cards Card;
         public int Slot;
 
-        public LTGTurn(Cards card, int slot)
+        public LtgTurn(Cards card, int slot)
         {
             Type = ApplicationType.Left;
             Card = card;
             Slot = slot;
         }
 
-        public LTGTurn(int slot, Cards card)
+        public LtgTurn(int slot, Cards card)
         {
             Type = ApplicationType.Right;
             Slot = slot;
@@ -66,68 +67,67 @@ namespace LTGSimulator
                 string.Format("{0} {1}", Slot, Card);
         }
 
-        public static LTGTurn Parse(string s)
+        public static LtgTurn Parse(string s)
         {
             int slot;
             var args = s.Split(new char[] {' '});
             return int.TryParse(args[0], out slot) ? 
-                new LTGTurn(slot, (Cards)Enum.Parse(typeof(Cards), args[1])) : 
-                new LTGTurn((Cards)Enum.Parse(typeof(Cards), args[0]), int.Parse(args[1]));
+                new LtgTurn(slot, (Cards)Enum.Parse(typeof(Cards), args[1])) : 
+                new LtgTurn((Cards)Enum.Parse(typeof(Cards), args[0]), int.Parse(args[1]));
         }
     }
 
-    public abstract class LTGControllerBase
+    public abstract class LtgControllerBase
     {
-        public LTGReaderWriter ReaderWriter { get; set; }
-        private bool _gameInProgress;
-        protected static readonly ILog log = LogManager.GetLogger(typeof(LTGControllerBase));
-        protected int _currentTurn;
-        protected int _playerNum;
+        public LtgReaderWriter ReaderWriter { get; set; }        
+        private static readonly ILog Log = LogManager.GetLogger(typeof(LtgControllerBase));                
+        protected LtgGameState State;
+        protected int ProponentId;
 
-        public virtual void PlayGame(bool moveFirst)
-        {
-            _gameInProgress = true;
-            _currentTurn = 0;
-            _playerNum = moveFirst ? 0 : 1;
-
+        // implementation for dump controllers that don't track their own state
+        public virtual void PlayGame()
+        {           
             try
             {
-                while (_gameInProgress)
+                while (true)
                 {
-                    if (moveFirst)
+                    if (ProponentId == 0) // we move first
                     {
                         var turn = GetTurn();
+                        State.ApplyProponentTurn(turn);
                         ReaderWriter.ExecuteTurn(turn);
-                        log.DebugFormat("      we played: {0}", turn);
+                        Log.DebugFormat("      we played: {0}", turn);
 
                         var opponentTurn = ReaderWriter.GetOpponentTurn();
-                        log.DebugFormat("opponent played: {0}", opponentTurn);
+                        State.ApplyOpponentTurn(opponentTurn);
+                        Log.DebugFormat("opponent played: {0}", opponentTurn);
                     }
-                    else
+                    else // opponent goes first
                     {
                         var opponentTurn = ReaderWriter.GetOpponentTurn();
-                        log.DebugFormat("opponent played: {0}", opponentTurn);
+                        State.ApplyOpponentTurn(opponentTurn);
+                        Log.DebugFormat("opponent played: {0}", opponentTurn);
                         
                         var turn = GetTurn();
                         ReaderWriter.ExecuteTurn(turn);
-                        log.DebugFormat("      we played: {0}", turn);
-                    }
-                    _currentTurn++;
-                    log.DebugFormat("---- turn {0} ----", _currentTurn);
+                        State.ApplyProponentTurn(turn);
+                        Log.DebugFormat("      we played: {0}", turn);
+                    }                    
                 }
             }
             catch(GameOverException)
-            {
-                _gameInProgress = false;
+            {                
             }
         }
 
-        public abstract LTGTurn GetTurn();
+        // move generator for controllers that don't track state
+        public abstract LtgTurn GetTurn();
 
-        public virtual void Init(string[] args)
+        // should be a constructor but we're limited by the dynamic creation of the class
+        public virtual void Init(int playerId, string[] args)
         {
-            
+            ProponentId = playerId;
+            State = new LtgGameState(playerId);
         }
-
     }
 }
