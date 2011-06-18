@@ -41,14 +41,14 @@ namespace LtgSimulator
             }
 
             return p1 == "1" ?
-                new LtgTurn((LtgTurn.Cards)Enum.Parse(typeof(LtgTurn.Cards), p2), int.Parse(p3)) :
-                new LtgTurn(int.Parse(p2), (LtgTurn.Cards)Enum.Parse(typeof(LtgTurn.Cards), p3));
+                new LtgTurn((Cards)Enum.Parse(typeof(Cards), p2), int.Parse(p3)) :
+                new LtgTurn(int.Parse(p2), (Cards)Enum.Parse(typeof(Cards), p3));
         }
 
        
     }
 
-    internal class GameOverException : Exception
+    public class GameOverException : Exception
     {
     }
 }

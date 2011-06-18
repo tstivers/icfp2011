@@ -58,7 +58,13 @@ namespace LTGCliClient
             ltgReaderWriter.SetStreams(standardInput, standardOutput);
             ltgController.ReaderWriter = ltgReaderWriter;
 
-            ltgController.PlayGame();
+            try
+            {
+                ltgController.PlayGame();
+            }
+            catch (GameOverException)
+            {                
+            }
         }
     }
 }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\HoboWithAShotgun.cs" />
     <Compile Include="Controllers\LtgControllerBase.cs" />
     <Compile Include="Controllers\Noop.cs" />
     <Compile Include="GameState\LtgGameState.cs" />

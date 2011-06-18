@@ -68,8 +68,13 @@ namespace LtgSimulator.GameState
         {
             ProponentId = proponentId;
             OpponentId = proponentId == 0 ? 1 : 0;
-            _state[0] = new Slot[256];
-            _state[1] = new Slot[256];
+            
+            for (int x = 0; x < 2; x++)
+            {
+                _state[x] = new Slot[256];
+                for (int i = 0; i < 256; i++)
+                    _state[x][i] = new Slot();
+            }
         }
        
         public void ApplyProponentTurn(LtgTurn turn)
