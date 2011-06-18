@@ -21,6 +21,8 @@ namespace LtgSimulator.GameState
             }
         }
 
+        public int Index { get; private set; }
+
         public bool IsAlive
         {
             get
@@ -50,6 +52,11 @@ namespace LtgSimulator.GameState
         public bool IsValue { get { return !IsFunction; } }
 
         public bool IsFunction { get { return Function != null; } }
+
+        public Slot(int index)
+        {
+            Index = index;
+        }
     }
 
     public class LtgGameState
@@ -73,7 +80,7 @@ namespace LtgSimulator.GameState
             {
                 _state[x] = new Slot[256];
                 for (int i = 0; i < 256; i++)
-                    _state[x][i] = new Slot();
+                    _state[x][i] = new Slot(i);
             }
         }
        

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using log4net;
+using LtgSimulator.GameState;
 
 namespace LtgSimulator.Controllers
 {    
@@ -88,15 +89,32 @@ namespace LtgSimulator.Controllers
             MaterializeSlotGetter(0, 4);
         }
 
+        protected void Attack(int from, Slot srcSlotValue, Slot targetSlotValue, Slot damageValue)
+        {
+            Play(from, Cards.attack);
+            MaterializeSlotGetter(from, srcSlotValue.Index);
+            MaterializeSlotGetter(from, targetSlotValue.Index);
+            MaterializeSlotGetter(from, damageValue.Index);
+        }
+
         public override void PlayGame()
         {
+            // set up our constants
+            GenerateSlotValue(1, 0);
+            GenerateSlotValue(2, 128);
+            GenerateSlotValue(3, 4096 * 2);
+            GenerateSlotValue(4, 4096);
+
             // kill the opponents first 128 slots
             for (int i = 0; i < 128; i++)
             {
-                Attack(i, i, 4096*2);
-                Attack(i + 128, i, 4096); // overkill!
+                GenerateSlotValue(5, 255 - i);
+                Attack(9, State.ProponentSlot[1], State.ProponentSlot[5], State.ProponentSlot[3]);
+                Attack(9, State.ProponentSlot[2], State.ProponentSlot[5], State.ProponentSlot[4]);
+                Play(Cards.succ, 1);
+                Play(Cards.succ, 2);
             }
-
+          
             // now just spin healing slot 1 until the game is over
             while (true)
             {

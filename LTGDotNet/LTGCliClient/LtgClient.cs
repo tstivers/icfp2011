@@ -33,7 +33,8 @@ namespace LTGCliClient
 
         static void Main(string[] args)
         {
-            log4net.Config.XmlConfigurator.Configure();
+            if (File.Exists("LTGCliClient.exe.config"))
+                log4net.Config.XmlConfigurator.Configure();
             
             if (args.Count() < 2)
             {     
