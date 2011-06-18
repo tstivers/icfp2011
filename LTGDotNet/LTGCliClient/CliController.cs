@@ -10,9 +10,9 @@ using log4net.Appender;
 
 namespace LTGCliClient
 {
-    class Program
+    class CliController
     {
-        protected static readonly ILog log = LogManager.GetLogger(typeof(Program));
+        protected static readonly ILog log = LogManager.GetLogger(typeof(CliController));
 
         // adapted from http://geekswithblogs.net/wpeck/archive/2009/10/08/setting-log4net-fileappender.file-at-runtime.aspx
         public static void InitializeLogFile(string logFileName)
@@ -48,7 +48,7 @@ namespace LTGCliClient
             var cType = Type.GetType("LTGSimulator." + args[1] + ", LTGSimulator");
           
             var ltgReaderWriter = new LTGReaderWriter();
-            var ltgController = (LTGController) Activator.CreateInstance(cType);
+            var ltgController = (LTGControllerBase) Activator.CreateInstance(cType);
             ltgController.Init(args);
 
             Stream standardInput = Console.OpenStandardInput();

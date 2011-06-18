@@ -44,12 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LTGController.cs" />
-    <Compile Include="MatchReader.cs" />
-    <Compile Include="NoopController.cs" />
+    <Compile Include="Controllers\LTGControllerBase.cs" />
+    <Compile Include="Controllers\NoopController.cs" />
+    <Compile Include="GameState\GameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LTGReaderWriter.cs" />
-    <Compile Include="ScriptedController.cs" />
+    <Compile Include="Controllers\ScriptedController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

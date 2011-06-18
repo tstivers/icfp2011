@@ -6,7 +6,7 @@ using System.IO;
 
 namespace LTGSimulator
 {
-    public class ScriptedController : LTGController
+    public class ScriptedController : LTGControllerBase
     {
         private LTGTurn[] _script;
         private int _index = 0;

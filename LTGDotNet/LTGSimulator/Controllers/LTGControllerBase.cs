@@ -76,11 +76,11 @@ namespace LTGSimulator
         }
     }
 
-    public abstract class LTGController
+    public abstract class LTGControllerBase
     {
         public LTGReaderWriter ReaderWriter { get; set; }
         private bool _gameInProgress;
-        protected static readonly ILog log = LogManager.GetLogger(typeof(LTGController));
+        protected static readonly ILog log = LogManager.GetLogger(typeof(LTGControllerBase));
         protected int _currentTurn;
         protected int _playerNum;
 

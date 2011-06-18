@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LTGSimulator
 {
-    class NoopController : LTGController
+    class NoopController : LTGControllerBase
     {
         public override LTGTurn GetTurn()
         {            
