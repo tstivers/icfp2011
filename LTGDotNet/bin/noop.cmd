@@ -1,1 +1,1 @@
-@..\LTGCliClient\bin\debug\LTGCliClient.exe TestReaderWriter NoopController %1
+@..\LTGCliClient\bin\debug\LTGCliClient.exe %1 NoopController

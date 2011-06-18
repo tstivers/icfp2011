@@ -84,7 +84,7 @@ namespace LTGSimulator
         protected int _currentTurn;
         protected int _playerNum;
 
-        public void PlayGame(bool moveFirst)
+        public virtual void PlayGame(bool moveFirst)
         {
             _gameInProgress = true;
             _currentTurn = 0;
@@ -123,6 +123,11 @@ namespace LTGSimulator
         }
 
         public abstract LTGTurn GetTurn();
+
+        public virtual void Init(string[] args)
+        {
+            
+        }
 
     }
 }

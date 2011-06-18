@@ -34,34 +34,22 @@ namespace LTGCliClient
         {
             log4net.Config.XmlConfigurator.Configure();
             
-            if (args.Count() != 3)
+            if (args.Count() < 2)
             {     
-                log.Fatal("wrong number of arguments, exiting");
+                log.Fatal("usage: LTGCliClient.exe <playernum> <controllerclass> [controller args]");
                 return;
             }
 
-            InitializeLogFile(String.Format("player{0}.log", args[2]));
+            InitializeLogFile(String.Format("player{0}.log", args[0]));
 
             log.Debug("----------- app starting ------------");
             log.Debug("Command line: " + String.Join(" ", args));
-
-            var rwType = Type.GetType("LTGSimulator." + args[0] + ", LTGSimulator");
+            
             var cType = Type.GetType("LTGSimulator." + args[1] + ", LTGSimulator");
-
-            if (rwType == null)
-            {
-                log.Fatal("Unable to load type: " + args[0]);
-                return;
-            }
-
-            if (cType == null)
-            {
-                log.Fatal("Unable to load type: " + args[1]);
-                return;
-            }
-
-            var ltgReaderWriter = (LTGReaderWriter)Activator.CreateInstance(rwType);
+          
+            var ltgReaderWriter = new LTGReaderWriter();
             var ltgController = (LTGController) Activator.CreateInstance(cType);
+            ltgController.Init(args);
 
             Stream standardInput = Console.OpenStandardInput();
             Stream standardOutput = Console.OpenStandardOutput();
@@ -69,7 +57,7 @@ namespace LTGCliClient
             ltgReaderWriter.SetStreams(standardInput, standardOutput);
             ltgController.ReaderWriter = ltgReaderWriter;
 
-            ltgController.PlayGame(args[2] == "0");
+            ltgController.PlayGame(args[0] == "0");
         }
     }
 }

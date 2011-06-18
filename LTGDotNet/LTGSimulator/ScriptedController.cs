@@ -27,7 +27,13 @@ namespace LTGSimulator
         protected void LoadScript(String fileName)
         {
             log.DebugFormat("loading script from file {0}", fileName);
-            var r = new StreamReader(fileName);            
+            if (!File.Exists(fileName))
+            {
+                log.FatalFormat("unable to load script file {0}", fileName);
+                throw new GameOverException();               
+            }
+
+            var r = new StreamReader(fileName);
             var turns = new List<LTGTurn>();
 
             for(string line = r.ReadLine(); line != null; line = r.ReadLine())

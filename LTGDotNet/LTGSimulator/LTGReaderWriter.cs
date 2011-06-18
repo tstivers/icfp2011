@@ -7,7 +7,7 @@ using log4net;
 
 namespace LTGSimulator
 {
-    public abstract class LTGReaderWriter
+    public class LTGReaderWriter
     {
         protected static readonly ILog log = LogManager.GetLogger(typeof(LTGReaderWriter));
 
@@ -27,7 +27,27 @@ namespace LTGSimulator
             _oStream.Flush();
         }
 
-        public abstract LTGTurn GetOpponentTurn();
+        public virtual LTGTurn GetOpponentTurn()
+        {
 
+            String p1 = _iStream.ReadLine();
+            String p2 = _iStream.ReadLine();
+            String p3 = _iStream.ReadLine();
+
+            if (p1 == null || p2 == null || p3 == null)
+            {
+                throw new GameOverException();
+            }
+
+            return p1 == "1" ?
+                new LTGTurn((LTGTurn.Cards)Enum.Parse(typeof(LTGTurn.Cards), p2), int.Parse(p3)) :
+                new LTGTurn(int.Parse(p2), (LTGTurn.Cards)Enum.Parse(typeof(LTGTurn.Cards), p3));
+        }
+
+       
+    }
+
+    internal class GameOverException : Exception
+    {
     }
 }
