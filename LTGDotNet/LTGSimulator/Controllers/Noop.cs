@@ -9,7 +9,8 @@ namespace LtgSimulator.Controllers
     {
         public override LtgTurn GetTurn()
         {            
-            return new LtgTurn(255, Cards.I);
+            // sneaky
+            return new LtgTurn(129, Cards.I);
         }
     }
 }

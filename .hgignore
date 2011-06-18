@@ -1,7 +1,7 @@
 syntax: glob
 *.suo
-*/bin/Debug/*
-*/obj/x86/Debug/*
-*/obj/Debug/*
+*/Debug/*
 *ReSharper*
 LTGDotNet/bin/*.log
+LTGDotNet/bin/*.txt
+*/Release/*
