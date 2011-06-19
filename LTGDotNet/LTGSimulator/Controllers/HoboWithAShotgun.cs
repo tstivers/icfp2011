@@ -58,7 +58,7 @@ namespace LtgSimulator.Controllers
             int heal0Slot = 8;
             int attackSlot = 16;
 
-            GenerateHealer(heal1Slot, 0, 1, healAmtSlot, new[] {0, 1});
+            GenerateHealer(heal1Slot, 0, 1, healAmtSlot, new[] { 0, 1 });
             GenerateHealer(heal0Slot, 1, 0, healAmtSlot, new[] {0, 1});
             GenerateAttacker(attackSlot, attackTargetSlot, 4096 * 4, new [] {0, 1, 2});
                   
@@ -75,29 +75,33 @@ namespace LtgSimulator.Controllers
 
             Play(Cards.dbl, healAmtSlot);
 
-            for (int i = 0; i < 256; i++)
-            {
-                int targetSlot = State.LastOpponentTurn.Slot;
-                if (_killed[targetSlot]) // we've already killed that slot
-                    for (targetSlot = 0; targetSlot < 256 && _killed[targetSlot]; targetSlot++) ; // find the lowest living slot
-                
-                GenerateSlotValue(attackTargetSlot, 255 - targetSlot);
-                Play(attackSlot, Cards.zero);
-                _killed[targetSlot] = true;
-
-                for (int j = 0; j < 5; j++)
-                {
-                    Play(heal0Slot, Cards.zero);
-                    Play(heal1Slot, Cards.zero);
-                }
-            }
-
-            // now just spin ressing slots until the game is over
-            var rng = new Random();
             while (true)
             {
                 for (int i = 0; i < 256; i++)
-                    ResSlot(rng.Next(1, 255), i);
+                {
+                    int targetSlot = State.LastOpponentTurn.Slot;
+                    if (_killed[targetSlot]) // we've already killed that slot
+                        for (targetSlot = 0; targetSlot < 256 && _killed[targetSlot]; targetSlot++)
+                            ; // find the lowest living slot
+
+                    GenerateSlotValue(State.ProponentSlot[attackTargetSlot], 255 - targetSlot);
+                    Play(attackSlot, Cards.zero);
+                    _killed[targetSlot] = true;
+                    
+                    for (int j = 0; j < 5; j++)
+                    {
+                        Play(heal0Slot, Cards.zero);
+                        Play(heal1Slot, Cards.zero);
+                    }
+                }
+
+                // now just spin ressing slots until the game is over
+                var rng = new Random();
+                for (int i = 0; i < 256; i++)
+                {
+                    ResSlot(rng.Next(17, 255), i);
+                    _killed[i] = false;
+                }                
             }
         }
     }

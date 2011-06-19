@@ -75,6 +75,41 @@ namespace LtgSimulator.Controllers
             for (var i = 0; i < incs; i++)
                 Play(Cards.succ, slot);
         }
+
+        protected void GenerateSlotValue(Slot slot, int value)
+        {
+            Play(Cards.put, slot.Index);
+            Play(slot.Index, Cards.zero);
+
+            if (value == 0)
+                return;
+
+            Play(Cards.succ, slot.Index);            
+
+            Stack<bool> ops = new Stack<bool>();
+
+            while (value > 1)
+            {
+                if (value%2 == 0)
+                {                    
+                    value /= 2;
+                    ops.Push(true);
+                }
+                else
+                {                    
+                    value--;
+                    ops.Push(false);
+                }
+            }
+
+            while(ops.Count != 0)
+            {
+                if(ops.Pop())
+                    Play(Cards.dbl, slot.Index);
+                else
+                    Play(Cards.succ, slot.Index);
+            }
+        }
         
         protected void ComposeValue(int slot, int value, bool materialize = true)
         {
