@@ -21,9 +21,10 @@ namespace LtgSimulator.Controllers
             ComposeValue(destSlot, srcSlot, materialize);
         }
 
-        protected void Copy(int destSlot, int srcSlot)
+        protected void Copy(int destSlot, int srcSlot, bool clear = true)
         {
-            Play(Cards.put, destSlot);
+            if(clear)
+                Play(Cards.put, destSlot);
             Play(destSlot, Cards.get);
             ComposeValue(destSlot, srcSlot);
         }
