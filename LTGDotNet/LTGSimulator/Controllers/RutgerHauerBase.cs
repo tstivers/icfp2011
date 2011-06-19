@@ -73,7 +73,6 @@ namespace LtgSimulator.Controllers
                 Play(Cards.dbl, slot);
             for (var i = 0; i < incs; i++)
                 Play(Cards.succ, slot);
-            State.ProponentSlot[slot].Value = value;
         }
         
         protected void ComposeValue(int slot, int value, bool materialize = true)
@@ -88,21 +87,15 @@ namespace LtgSimulator.Controllers
             else
             {
                 var dbls = (int)Math.Floor(Math.Log(value, 2.0));
-                int incs = 0;
-                if (dbls != 0)
-                    incs = value - (int)Math.Pow(2, dbls);
-                else
-                    incs = value;
-
+                int incs = value - (int)Math.Pow(2, dbls);
 
                 for (var i = 0; i < incs; i++)
                     Compose(slot, Cards.succ);
 
                 for (int i = 0; i < dbls; i++)
                     Compose(slot, Cards.dbl);
-
-                if (dbls != 0) // 0 * 2 == 0
-                    Compose(slot, Cards.succ);                
+                
+                Compose(slot, Cards.succ);                
             }
 
             // materialize the value

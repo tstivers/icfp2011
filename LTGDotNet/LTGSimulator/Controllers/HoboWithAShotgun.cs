@@ -14,31 +14,44 @@ namespace LtgSimulator.Controllers
 
         public override void PlayGame()
         {
-            GenerateSlotValue(1, 4096 * 2); // buckshot hurts
-            GenerateSlotValue(2, 4096); // double tap
-            GenerateSlotValue(3, 0); // src1
-            GenerateSlotValue(4, 128); // src2         
-
-            Play(5, Cards.attack);
-            ComposeGet(5, 3, false);
+            GenerateSlotValue(2, 4096 * 2); // buckshot hurts
+            GenerateSlotValue(3, 4096); // double tap
+            GenerateSlotValue(4, 0); // src1
+            GenerateSlotValue(5, 128); // src2         
 
             Play(6, Cards.attack);
             ComposeGet(6, 4, false);
 
-            Play(7, Cards.get);
-            ComposeValue(7, 3, false);
+            Play(7, Cards.attack);
+            ComposeGet(7, 5, false);
+
+            Play(8, Cards.get);
+            ComposeValue(8, 4, false);
 
             Play(0, Cards.S);
-            ComposeGet(0, 5);
-            ComposeGet(0, 7);
+            ComposeGet(0, 6);
+            ComposeGet(0, 8);
+
+            Play(1, Cards.S);
+            ComposeGet(1, 7);
+            ComposeGet(1, 8);
             
             for (int i = 0; i < 128; i++)
             {
-                Copy(8, 0); // copy the payload
-                Play(8, Cards.zero); // materialize it
-                ComposeGet(8, 1); // execute it for massive damage
-                Play(Cards.succ, 3); // move to the next target
+                Copy(9, 0); // copy the payload
+                Play(9, Cards.zero); // materialize it
+                ComposeGet(9, 2); // execute it for massive damage
+
+                Copy(9, 1);
+                Play(9, Cards.zero);
+                ComposeGet(9, 3); // double tap
+
+                Play(Cards.succ, 4); // move to the next target
+                Play(Cards.succ, 5);
             }
+
+            while(true)
+                Play(Cards.succ, 0);
 
             return;
 
