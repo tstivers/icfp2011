@@ -89,7 +89,10 @@ namespace LtgSimulator.GameState
             _lastTurn[ProponentId] = turn;
             ApplyTurn(turn, ProponentSlot, OpponentSlot);
             if (ProponentId == 1)
+            {
                 Turn++;
+                log4net.GlobalContext.Properties["turn"] = Turn;
+            }
         }
 
         public void ApplyOpponentTurn(LtgTurn turn)
@@ -97,7 +100,10 @@ namespace LtgSimulator.GameState
             _lastTurn[OpponentId] = turn;
             ApplyTurn(turn, OpponentSlot, ProponentSlot);
             if (OpponentId == 1)
+            {
                 Turn++;
+                log4net.GlobalContext.Properties["turn"] = Turn;
+            }
         }
 
         protected void ApplyTurn(LtgTurn turn, Slot[] proponent, Slot[] opponent)
