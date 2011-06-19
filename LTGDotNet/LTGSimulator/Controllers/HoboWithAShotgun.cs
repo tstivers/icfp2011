@@ -27,13 +27,13 @@ namespace LtgSimulator.Controllers
         }
 
         // always attacks from slot 0
-        public void GenerateAttacker(int destSlot, int targetSlotSlot, int amtSlot, int[] tempSlots)
+        public void GenerateAttacker(int destSlot, int targetSlotSlot, int amount, int[] tempSlots)
         {
             Play(tempSlots[0], Cards.attack);
             Play(tempSlots[0], Cards.zero);
             ComposeGet(tempSlots[0], targetSlotSlot, false);
 
-            ComposeGet(tempSlots[1], amtSlot, false);
+            ComposeValue(tempSlots[1], amount, false);
 
             Play(tempSlots[2], Cards.S);
             ComposeGet(tempSlots[2], tempSlots[0]);
@@ -51,20 +51,17 @@ namespace LtgSimulator.Controllers
         }
 
         public override void PlayGame()
-        {
-            int attackDmgSlot = 0;
+        {            
             int attackTargetSlot = 1;
             int healAmtSlot = 2;
             int heal1Slot = 4;
-            int heal0Slot = 8;            
+            int heal0Slot = 8;
             int attackSlot = 16;
 
             GenerateHealer(heal1Slot, 0, 1, healAmtSlot, new[] {0, 1});
             GenerateHealer(heal0Slot, 1, 0, healAmtSlot, new[] {0, 1});
-            GenerateAttacker(attackSlot, attackTargetSlot, attackDmgSlot, new int[] {0, 1, 2});
-
-            GenerateSlotValue(attackTargetSlot, 0);
-            GenerateSlotValue(attackDmgSlot, 4096*4);
+            GenerateAttacker(attackSlot, attackTargetSlot, 4096 * 4, new [] {0, 1, 2});
+                  
             GenerateSlotValue(healAmtSlot, 4096*2);
 
             Play(heal1Slot, Cards.zero);
