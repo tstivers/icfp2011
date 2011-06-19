@@ -95,6 +95,8 @@ namespace LtgSimulator.Controllers
             MaterializeSlotGetter(0, 2);
             MaterializeSlotGetter(0, 3);
             MaterializeSlotGetter(0, 4);
+            State.ProponentSlot[srcSlot].Vitality -= damage;
+            State.OpponentSlot[targetSlot].Vitality -= (damage*9)/10;
         }
 
         protected void Attack(int from, Slot srcSlotValue, Slot targetSlotValue, Slot damageValue)
@@ -121,8 +123,8 @@ namespace LtgSimulator.Controllers
 
             var rng = new Random();
 
-            // kill the opponnent's slots rarr
-            for (int i = 0; i < 128; i++)
+            // systematically kill the opponnent's slots as quickly as possible
+            for (int i = 129; i < 128; i++)
             {
                 int targetSlot = State.LastOpponentTurn.Slot;
                 if (_killed[targetSlot]) // we've already killed that slot
@@ -140,7 +142,59 @@ namespace LtgSimulator.Controllers
                 for(var j = 1; j < 7; j++)
                     ResSlot(rng.Next(7, 255), j);
             }
-         
+
+            Log.Info("Switching to slow killin");
+            // switch to slower killing);
+            while (true)
+            {
+                // choose a target
+                int targetSlot = State.LastOpponentTurn.Slot;
+                if (_killed[targetSlot]) // we've already killed that slot
+                    for (targetSlot = 0; targetSlot < 256 && _killed[targetSlot]; targetSlot++); // find the lowest living slot
+
+                if (targetSlot == 256) // already killed everything
+                    break;
+
+                int targetHealth = 10000; // this is how much damage we need to do
+                int sourceSlot = 0;
+                while (targetHealth > 0 && sourceSlot != -1)
+                {
+                    // find slot with the most spare health
+                    sourceSlot = -1;
+                    int health = 64; // leave at least 64 health
+                    for (int i = 0; i < 256; i++)
+                    {
+                        if (State.ProponentSlot[i].Vitality > health)
+                        {
+                            health = State.ProponentSlot[i].Vitality;
+                            sourceSlot = i;
+                        }
+                    }
+
+                    if(sourceSlot != -1)
+                    {
+                        Log.InfoFormat("target health = {0}  source health = {1}", targetHealth, health);                        
+                        int dbls = (int)Math.Floor(Math.Log(health, 2.0));
+                        while (Math.Pow(2, dbls - 1) > targetHealth)
+                            dbls--;
+                        int damage = (int)Math.Pow(2, dbls);
+                        Log.InfoFormat("attacking slot {0} for {1} damage", targetSlot, damage);
+                        Attack(sourceSlot, targetSlot, damage);
+                        targetHealth -= (damage*9)/10;
+                    }
+                }
+
+                if (targetHealth <= 0)
+                    _killed[targetSlot] = true;
+
+                if (sourceSlot == -1)
+                    break;
+
+                // res our slots for next round
+                for (var j = 1; j < 7; j++)
+                    ResSlot(rng.Next(7, 255), j);
+            }
+
             // now just spin ressing slots until the game is over
             while (true)
             {
@@ -150,3 +204,4 @@ namespace LtgSimulator.Controllers
         }
     }
 }
+ 
