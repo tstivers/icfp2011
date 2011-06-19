@@ -8,12 +8,24 @@ namespace LtgSimulator.Controllers
 {
     class RutgerHauerBase : LtgControllerBase
     {
-        protected void MaterializeSlotGetter(int destSlot, int srcSlot)
+        protected void Compose(int destSlot, Cards card)
         {
             Play(Cards.K, destSlot);
             Play(Cards.S, destSlot);
+            Play(destSlot, card);
+        }
+
+        protected void ComposeGet(int destSlot, int srcSlot, bool materialize = true)
+        {
+            Compose(destSlot, Cards.get);
+            ComposeValue(destSlot, srcSlot, materialize);
+        }
+
+        protected void Copy(int destSlot, int srcSlot)
+        {
+            Play(Cards.put, destSlot);
             Play(destSlot, Cards.get);
-            GenValueGenerator(destSlot, srcSlot);
+            ComposeValue(destSlot, srcSlot);
         }
 
         protected void Attack(int srcSlot, int targetSlot, int damage)
@@ -23,17 +35,17 @@ namespace LtgSimulator.Controllers
             GenerateSlotValue(4, damage);
 
             Play(0, Cards.attack);
-            MaterializeSlotGetter(0, 2);
-            MaterializeSlotGetter(0, 3);
-            MaterializeSlotGetter(0, 4);
+            ComposeGet(0, 2);
+            ComposeGet(0, 3);
+            ComposeGet(0, 4);
         }
 
         protected void Attack(int from, Slot srcSlotValue, Slot targetSlotValue, Slot damageValue)
         {
             Play(from, Cards.attack);
-            MaterializeSlotGetter(from, srcSlotValue.Index);
-            MaterializeSlotGetter(from, targetSlotValue.Index);
-            MaterializeSlotGetter(from, damageValue.Index);
+            ComposeGet(from, srcSlotValue.Index);
+            ComposeGet(from, targetSlotValue.Index);
+            ComposeGet(from, damageValue.Index);
         }
 
         protected void ResSlot(int from, int target)
@@ -63,41 +75,39 @@ namespace LtgSimulator.Controllers
                 Play(Cards.succ, slot);
             State.ProponentSlot[slot].Value = value;
         }
-
-        // doesn't handle 0 or 1 correctly
-        protected void GenValueGenerator(int slot, int value)
+        
+        protected void ComposeValue(int slot, int value, bool materialize = true)
         {
-            int generatedValue = 1;
-
-            int dblCount = 0;
-            while (generatedValue * 2 < value)
+            if (value == 0)
             {
-                generatedValue *= 2;
-                dblCount++;
             }
-
-            while (generatedValue < value)
+            else if (value == 1)
             {
-                Play(Cards.K, slot);
-                Play(Cards.S, slot);
-                Play(slot, Cards.succ);
-                generatedValue++;
+                Compose(slot, Cards.succ);
             }
-
-            for (int i = 0; i < dblCount; i++)
+            else
             {
-                Play(Cards.K, slot);
-                Play(Cards.S, slot);
-                Play(slot, Cards.dbl);
-                generatedValue *= 2;
-            }
+                var dbls = (int)Math.Floor(Math.Log(value, 2.0));
+                int incs = 0;
+                if (dbls != 0)
+                    incs = value - (int)Math.Pow(2, dbls);
+                else
+                    incs = value;
 
-            Play(Cards.K, slot);
-            Play(Cards.S, slot);
-            Play(slot, Cards.succ);
+
+                for (var i = 0; i < incs; i++)
+                    Compose(slot, Cards.succ);
+
+                for (int i = 0; i < dbls; i++)
+                    Compose(slot, Cards.dbl);
+
+                if (dbls != 0) // 0 * 2 == 0
+                    Compose(slot, Cards.succ);                
+            }
 
             // materialize the value
-            Play(slot, Cards.zero);
+            if(materialize)
+                Play(slot, Cards.zero);
         }
     }
 }
