@@ -12,8 +12,116 @@ namespace LtgSimulator.Controllers
             
         }
 
+        public void GenerateHealer(int destSlot, int srcSlot, int targetSlot, int amtSlot, int[] tempSlots)
+        {
+            Play(tempSlots[0], Cards.help);
+            ComposeValue(tempSlots[0], srcSlot);
+            ComposeValue(tempSlots[0], targetSlot);
+            ComposeGet(tempSlots[0], amtSlot, false);
+
+            ComposeGet(tempSlots[1], destSlot, false);
+
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, tempSlots[0]);
+            ComposeGet(destSlot, tempSlots[1]);
+
+            Play(Cards.put, tempSlots[0]);
+            Play(Cards.put, tempSlots[1]);
+        }
+
+        // always attacks from slot 0
+        public void GenerateAttacker(int destSlot, int targetSlotSlot, int amtSlot, int[] tempSlots)
+        {
+            Play(tempSlots[0], Cards.attack);
+            Play(tempSlots[0], Cards.zero);
+            ComposeGet(tempSlots[0], targetSlotSlot, false);
+
+            ComposeGet(tempSlots[1], amtSlot, false);
+
+            Play(tempSlots[2], Cards.S);
+            ComposeGet(tempSlots[2], tempSlots[0]);
+            ComposeGet(tempSlots[2], tempSlots[1]);
+
+            Play(Cards.put, tempSlots[0]);
+            ComposeGet(tempSlots[0], destSlot, false);
+
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, tempSlots[2]);
+            ComposeGet(destSlot, tempSlots[0]);
+
+            for(int i = 0; i < 3; i++)
+                Play(Cards.put, i);
+        }
+
         public override void PlayGame()
         {
+            int dmgSlot = 4;
+            int targetSlot = 1;
+            int getSlot = 3;
+            int heal1Slot = 8;
+            int heal0Slot = 16;
+            int healAmtSlot = 7;
+            int attackSlot = 5;
+
+            GenerateHealer(heal1Slot, 0, 1, healAmtSlot, new[] { 0, 1 });
+            GenerateHealer(heal0Slot, 1, 0, healAmtSlot, new[] { 0, 1 });
+            GenerateAttacker(attackSlot, targetSlot, dmgSlot, new int[] { 0, 1, 2 });
+                       
+            Play(heal1Slot, Cards.zero);
+            Play(Cards.dbl, healAmtSlot);
+
+            for (int i = 0; i < 10; i++)
+            {
+                Play(heal0Slot, Cards.zero);
+                Play(heal1Slot, Cards.zero);
+            }
+
+            Play(Cards.dbl, healAmtSlot);
+
+            Play(5, Cards.attack);
+            Play(5, Cards.zero);
+            ComposeGet(5, targetSlot, false);
+
+            ComposeGet(6, dmgSlot, false);
+
+            Play(Cards.put, 0);
+            Play(0, Cards.S);
+            ComposeGet(0, 5);
+            ComposeGet(0, 6);
+            
+            // slots 0, 1, 2, 3 are available at this point
+
+            Play(Cards.put, getSlot);
+            ComposeGet(getSlot, 5, false);
+           
+            Play(Cards.put, 5);
+            Play(5, Cards.S);
+            ComposeGet(5, 0);
+            ComposeGet(5, getSlot);            
+
+            for (int i = 0; i < 256; i++ )
+            {
+                Play(attackSlot, Cards.zero);
+
+                Play(Cards.succ, targetSlot);
+
+                for (int j = 0; j < 5; j++)
+                {
+                    Play(heal0Slot, Cards.zero);
+                    Play(heal1Slot, Cards.zero);
+                }
+            }
+
+            var rng = new Random();
+            // now just spin ressing slots until the game is over
+            while (true)
+            {
+                for (int i = 0; i < 256; i++)
+                    ResSlot(rng.Next(1, 255), i);
+            }
+
+            return;
+
             GenerateSlotValue(2, 4096 * 2); // buckshot hurts
             GenerateSlotValue(3, 4096); // double tap
             GenerateSlotValue(4, 0); // src1
