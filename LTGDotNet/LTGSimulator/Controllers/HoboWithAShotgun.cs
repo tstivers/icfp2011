@@ -7,10 +7,7 @@ namespace LtgSimulator.Controllers
 {
     class HoboWithAShotgun : RutgerHauerBase
     {
-        public void BuildShotgun(int src1, int src2, int target)
-        {
-            
-        }
+        private bool[] _killed = new bool[256];
 
         public void GenerateHealer(int destSlot, int srcSlot, int targetSlot, int amtSlot, int[] tempSlots)
         {
@@ -83,9 +80,13 @@ namespace LtgSimulator.Controllers
 
             for (int i = 0; i < 256; i++)
             {
+                int targetSlot = State.LastOpponentTurn.Slot;
+                if (_killed[targetSlot]) // we've already killed that slot
+                    for (targetSlot = 0; targetSlot < 256 && _killed[targetSlot]; targetSlot++) ; // find the lowest living slot
+                
+                GenerateSlotValue(attackTargetSlot, 255 - targetSlot);
                 Play(attackSlot, Cards.zero);
-
-                Play(Cards.succ, attackTargetSlot);
+                _killed[targetSlot] = true;
 
                 for (int j = 0; j < 5; j++)
                 {
