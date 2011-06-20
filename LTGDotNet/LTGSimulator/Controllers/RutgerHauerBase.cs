@@ -8,6 +8,78 @@ namespace LtgSimulator.Controllers
 {
     class RutgerHauerBase : LtgControllerBase
     {
+        public void GenerateCompoundHealer(int destSlot, int slotA, int slotB, int amtSlot, int[] tempSlots)
+        {
+            Play(tempSlots[0], Cards.help);
+            ComposeValue(tempSlots[0], slotA);
+            ComposeValue(tempSlots[0], slotB);
+            ComposeGet(tempSlots[0], amtSlot, false);
+
+            Play(tempSlots[1], Cards.help);
+            ComposeValue(tempSlots[1], slotB);
+            ComposeValue(tempSlots[1], slotA);
+            ComposeGet(tempSlots[1], amtSlot, false);
+
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, tempSlots[0]);
+            ComposeGet(destSlot, tempSlots[1]);
+
+            for (int i = 0; i < 2; i++)
+                Play(Cards.put, tempSlots[i]);
+        }
+
+        public void GenerateChain(int destSlot, int srcA, int srcB)
+        {
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, srcA);
+            ComposeGet(destSlot, srcB);
+        }
+
+        public void GenerateRepeater(int destSlot, int srcSlot, int[] tempSlots)
+        {
+            Play(Cards.put, tempSlots[0]);
+            ComposeGet(tempSlots[0], destSlot, false);
+
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, srcSlot);
+            ComposeGet(destSlot, tempSlots[0]);
+
+            Play(Cards.put, tempSlots[0]);
+        }
+
+        // always attacks from slot 0
+        public void GenerateAttacker(int destSlot, int targetSlotSlot, int amount, int[] tempSlots)
+        {
+            Play(tempSlots[0], Cards.attack);
+            Play(tempSlots[0], Cards.zero);
+            ComposeGet(tempSlots[0], targetSlotSlot, false);
+
+            ComposeValue(tempSlots[1], amount, false);
+
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, tempSlots[0]);
+            ComposeGet(destSlot, tempSlots[1]);
+
+            for (int i = 0; i < 3; i++)
+                Play(Cards.put, tempSlots[i]);
+        }
+
+        public void GenerateAttacker(int destSlot, int srcSlot, int targetSlotSlot, int amount, int[] tempSlots)
+        {
+            Play(tempSlots[0], Cards.attack);
+            ComposeValue(tempSlots[0], srcSlot);            
+            ComposeGet(tempSlots[0], targetSlotSlot, false);
+
+            ComposeValue(tempSlots[1], amount, false);
+
+            Play(destSlot, Cards.S);
+            ComposeGet(destSlot, tempSlots[0]);
+            ComposeGet(destSlot, tempSlots[1]);
+
+            for (int i = 0; i < 3; i++)
+                Play(Cards.put, tempSlots[i]);
+        }
+
         protected void Compose(int destSlot, Cards card)
         {
             Play(Cards.K, destSlot);
@@ -65,52 +137,12 @@ namespace LtgSimulator.Controllers
 
             Play(Cards.succ, slot);
 
-            if (value == 1)
-                return;
+            var ops = GetValueOps(value);
 
-            int dbls = (int)Math.Floor(Math.Log(value, 2.0));
-            int incs = value - (int)Math.Pow(2, dbls);
-            for (var i = 0; i < dbls; i++)
-                Play(Cards.dbl, slot);
-            for (var i = 0; i < incs; i++)
-                Play(Cards.succ, slot);
-        }
-
-        protected void GenerateSlotValue(Slot slot, int value)
-        {
-            Play(Cards.put, slot.Index);
-            Play(slot.Index, Cards.zero);
-
-            if (value == 0)
-                return;
-
-            Play(Cards.succ, slot.Index);            
-
-            Stack<bool> ops = new Stack<bool>();
-
-            while (value > 1)
-            {
-                if (value%2 == 0)
-                {                    
-                    value /= 2;
-                    ops.Push(true);
-                }
-                else
-                {                    
-                    value--;
-                    ops.Push(false);
-                }
-            }
-
-            while(ops.Count != 0)
-            {
-                if(ops.Pop())
-                    Play(Cards.dbl, slot.Index);
-                else
-                    Play(Cards.succ, slot.Index);
-            }
-        }
-        
+            while (ops.Count != 0)            
+                Play(ops.Pop() ? Cards.dbl : Cards.succ, slot);            
+        }      
+                
         protected void ComposeValue(int slot, int value, bool materialize = true)
         {
             if (value == 0)
@@ -122,21 +154,37 @@ namespace LtgSimulator.Controllers
             }
             else
             {
-                var dbls = (int)Math.Floor(Math.Log(value, 2.0));
-                int incs = value - (int)Math.Pow(2, dbls);
+                var ops = GetValueOps(value);
 
-                for (var i = 0; i < incs; i++)
-                    Compose(slot, Cards.succ);
-
-                for (int i = 0; i < dbls; i++)
-                    Compose(slot, Cards.dbl);
-                
-                Compose(slot, Cards.succ);                
+                foreach (var op in ops.Reverse())                
+                     Compose(slot, op ? Cards.dbl : Cards.succ);                
+                           
+                Compose(slot, Cards.succ);
             }
 
             // materialize the value
-            if(materialize)
+            if (materialize)
                 Play(slot, Cards.zero);
+        }
+
+        private Stack<bool> GetValueOps(int value)
+        {
+            var ops = new Stack<bool>();
+
+            while (value > 1)
+            {
+                if (value % 2 == 0)
+                {
+                    value /= 2;
+                    ops.Push(true);
+                }
+                else
+                {
+                    value--;
+                    ops.Push(false);
+                }
+            }
+            return ops;
         }
     }
 }

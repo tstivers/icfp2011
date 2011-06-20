@@ -45,9 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\BlindFury.cs" />
+    <Compile Include="Controllers\FastHobo.cs" />
+    <Compile Include="Controllers\FastSneakyHobo.cs" />
     <Compile Include="Controllers\HoboWithAShotgun.cs" />
     <Compile Include="Controllers\LtgControllerBase.cs" />
     <Compile Include="Controllers\Noop.cs" />
+    <Compile Include="Controllers\RandomHobo.cs" />
     <Compile Include="Controllers\RutgerHauerBase.cs" />
     <Compile Include="GameState\LtgGameState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
