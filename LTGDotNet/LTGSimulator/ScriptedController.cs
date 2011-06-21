@@ -11,10 +11,6 @@ namespace LTGSimulator
         private LTGTurn[] _script;
         private int _index = 0;
 
-        public ScriptedController()
-        {
-        }
-
         public override LTGTurn GetTurn()
         {
             if (_script == null)
@@ -27,10 +23,10 @@ namespace LTGSimulator
         protected void LoadScript(String fileName)
         {
             log.DebugFormat("loading script from file {0}", fileName);
-            var r = new StreamReader(fileName);            
+            var r = new StreamReader(fileName);
             var turns = new List<LTGTurn>();
 
-            for(string line = r.ReadLine(); line != null; line = r.ReadLine())
+            for (var line = r.ReadLine(); line != null; line = r.ReadLine())
             {
                 if (line.StartsWith("#") || line.Trim().Length == 0) // ignore comments and blank lines
                     continue;
